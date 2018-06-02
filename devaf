@@ -15,8 +15,7 @@
 enum pInfo
 {
 	pID,
-	pSuppressor,
-
+	pSuppressor
 };
 
 new PlayerInfo[MAX_PLAYERS][pInfo];
