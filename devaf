@@ -1,6 +1,3 @@
-// This is a comment
-// uncomment the line below if you want to write a filterscript
-
 #include <a_samp>
 #include <zcmd>
 #include <sscanf2>
@@ -8,49 +5,28 @@
 #include <streamer>
 #include <colors>
 
-#define DIALOG_SUPPRESSION 1
-#define DIALOG_SUPPRESSION_HELP 1 
 #define DIALOG_HELP 0
+#define DIALOG_SUPPRESSION_HELP 1
 
-enum pInfo
+
+enum E_pInfo
 {
 	pID,
-	pSuppressor
-};
-
-new PlayerInfo[MAX_PLAYERS][pInfo];
-new g_pSuppressor[MAX_PLAYERS];
-
-#if defined FILTERSCRIPT
-
-public OnFilterScriptInit()
-{
-	print("\n--------------------------------------");
-	print(" Blank Filterscript by your name here");
-	print("--------------------------------------\n");
-	return 1;
+	pSuppressor,
 }
 
-public OnFilterScriptExit()
-{
-	return 1;
-}
-
-#else
+new PlayerInfo[MAX_PLAYERS][E_Info];
 
 main()
 {
 	print("\n----------------------------------");
-	print(" Blank Gamemode by your name here");
+	print(" MEEKS tutorial GM");
 	print("----------------------------------\n");
 }
 
-#endif
-
 public OnGameModeInit()
 {
-	// Don't use these lines if it's a filterscript
-	SetGameModeText("Blank Script");
+	SetGameModeText("MEEKS Script");
 	AddPlayerClass(0, 1958.3783, 1343.1572, 15.3746, 269.1425, 0, 0, 0, 0, 0, 0);
 	return 1;
 }
@@ -245,7 +221,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         case DIALOG_HELP:
         {
             if(response)
-                return ShowPlayerDialog(playerid, DIALOG_SUPPRESSION_HELP, DIALOG_STYLE_LIST, "Commands", "Give Colt45\nAttach Suppressor\nDeattach Suppressor\nGive Suppressor\nThrow Suppressor", "Yes", "Exit");
+                return ShowPlayerDialog(playerid, DIALOG_SUPPRESSION_HELP, DIALOG_STYLE_LIST, "Commands", 
+                	"Give Colt45\n\
+                	Attach Suppressor\n\
+                	Deattach Suppressor\n\
+                	Give Suppressor\n\
+                	Throw Suppressor", "Yes", "Exit");
         }
 
         case DIALOG_SUPPRESSION_HELP:
@@ -268,11 +249,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
            }
             else
-               			return ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Commands", "Suppressor System", "Continue", "Cancel");
+            	return ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Commands", "Suppressor System", "Continue", "Cancel");
         }
     }
     return 1;
 }  
+
 public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 {
 	return 1;
@@ -284,59 +266,56 @@ CMD:createcolt45(playerid, params[])
 	SendClientMessage(playerid, COLOR_AQUA, "You have been given a Colt 45");
 	return 1;
 }
+
 CMD:givemesuppressor(playerid, params[])
 {
-    g_pSuppressor[playerid] = 1;
+    g_pSuppressor[playerid]++;
     SendClientMessage(playerid, COLOR_AQUA, "You have successfully gotten yourself a suppressor!");
 
     return 1; // Ending the CMD //
 }
+
 CMD:attachsuppressor(playerid, params[])
 {
-	 if(GetPlayerWeapon(playerid) == 22 && g_pSuppressor[playerid] > 0)
-   {
-        GivePlayerWeapon(playerid, 23, 10);
-		SendClientMessage(playerid, COLOR_AQUA, "You have successfully attached a Suppressor to your gun");
-	}
-{
-	if(GetPlayerWeapon(playerid) !=22 && g_pSuppressor[playerid] < 1)
-		return SendClientMessage(playerid, COLOR_RED, "You do not have a Suppressor and a Colt 45!");
+    if(g_pSuppressor[playerid] < 1) // If the player does not have suppresssor components then
+        return SendClientMessage(playerid, COLOR_RED, "You do not have a Suppressor!"); // Show a message that they do not possess the component and exit out of the code. As there is a return. //
+ 
+    if(GetPlayerWeapon(playerid) != 22) // If the weapon equipped is not a colt45
+        return SendClientMessage(playerid, COLOR_RED, "You do not have a colt 45 equipped!"); // Then show an error //
+ 
+    // If there was no error and the code reaches till here without encountering any 'return' then execute the main code which gives the silenced weapon. //
+ 
+    GivePlayerWeapon(playerid, 23, 10); // Give the silenced wep with 10 ammo
+    GivePlayerWeapon(playerid, 22, -1); // Remove colt45 //
+
+    g_pSuppressor[playerid]--; //g_pSuppressor[playerid] = g_pSuppressor[playerid] - 1; // Both of them are same. Reduce 1 from the suppressor component. //
+
+    SendClientMessage(playerid, COLOR_AQUA, "You have successfully attached a Suppressor to your gun"); // Send out a message. And end with return. //  
+ 
+    return 1;
 }
-{
-	if(g_pSuppressor[playerid] < 1)
-		return SendClientMessage(playerid, COLOR_RED, "You do not have a Suppressor!");
-}
-{
-	if(GetPlayerWeapon(playerid) != 22)
-		return SendClientMessage(playerid, COLOR_RED, "You do not have a Colt 45 equipped!");
-	return 1;
-}}
+
 CMD:deattachsuppressor(playerid, params[])
 {
-	if (GetPlayerWeapon(playerid) == 23)
-	{
-	    GivePlayerWeapon(playerid, 22, 10);
-	    SendClientMessage(playerid, COLOR_AQUA, "You have successfully deattached the Suppressor from your gun");
-	}
-	if(GetPlayerWeapon(playerid) != 22)
-	{
-		return SendClientMessage(playerid, COLOR_RED, "You don't have your colt 45 equipped");
-	}
 	if(GetPlayerWeapon(playerid) == 22)
-	{
-	return SendClientMessage(playerid, COLOR_RED, "You don't have a suppressor on your colt 45!");
-	}
+		return SendClientMessage(playerid, COLOR_RED, "You don't have a suppressor on your colt 45!");
+
+	if(GetPlayerWeapon(playerid) != 23)
+		return SendClientMessage(playerid, COLOR_RED, "You don't have your colt 45 equipped");
+
+    GivePlayerWeapon(playerid, 22, 10);
+    SendClientMessage(playerid, COLOR_AQUA, "You have successfully deattached the Suppressor from your gun");
+
 	return 1;
 }	
 
 CMD:throwsuppressor(playerid, params[])
 {
 	g_pSuppressor[playerid] = 0;
-	SendClientMessage(playerid, COLOR_AQUA, "You have sucessfully thrown away your suppressor");
+	SendClientMessage(playerid, COLOR_AQUA, "You have sucessfully thrown away your suppressor(s)");
+
 	return 1;
 }
-CMD:help(playerid, params[])
-{
-    ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Commands", "Suppressor System", "Continue", "Cancel");
-    return 1;
-} 
+
+CMD:help(playerid)
+return ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Commands", "Suppressor System", "Continue", "Cancel");
