@@ -12,11 +12,12 @@
 
 enum E_pInfo
 {
-	pID,
+    pID,
 
-	pSuppressor,
+    pSuppressor,
 
     pTruckerjob,
+    pcheckpointTrucker,
     bool:pIsHoldingCrate,
 }
 enum E_vehInfo
@@ -30,9 +31,9 @@ new PlayerInfo[MAX_PLAYERS][E_pInfo];
 
 main()
 {
-	print("\n----------------------------------");
-	print(" MEEKS tutorial GM");
-	print("----------------------------------\n");
+    print("\n----------------------------------");
+    print(" MEEKS tutorial GM");
+    print("----------------------------------\n");
 }
 
 public OnGameModeInit()
@@ -63,12 +64,10 @@ public OnGameModeInit()
 
     return 1;
 }
-
 public OnGameModeExit()
 {
-	return 1;
+    return 1;
 }
-
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if(newstate == PLAYER_STATE_DRIVER)
@@ -82,15 +81,13 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
     return 1;
 }
-
 public OnPlayerRequestClass(playerid, classid)
 {
-	SetPlayerPos(playerid, 1958.3783, 1343.1572, 15.3746);
-	SetPlayerCameraPos(playerid, 1958.3783, 1343.1572, 15.3746);
-	SetPlayerCameraLookAt(playerid, 1958.3783, 1343.1572, 15.3746);
-	return 1;
+    SetPlayerPos(playerid, 1958.3783, 1343.1572, 15.3746);
+    SetPlayerCameraPos(playerid, 1958.3783, 1343.1572, 15.3746);
+    SetPlayerCameraLookAt(playerid, 1958.3783, 1343.1572, 15.3746);
+    return 1;
 }
-
 public OnPlayerConnect(playerid)
 {
     PlayerInfo[playerid][pTruckerjob] = 0;
@@ -102,7 +99,7 @@ public OnPlayerDisconnect(playerid, reason)
     new i;
     if(IsPlayerAttachedObjectSlotUsed(playerid, i)) 
     RemovePlayerAttachedObject(playerid, i);
-	return 1;
+    return 1;
 }
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -113,11 +110,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         {
             if(response)
                 return ShowPlayerDialog(playerid, DIALOG_SUPPRESSION_HELP, DIALOG_STYLE_LIST, "Commands", 
-                	"Give Colt45\n\
-                	Attach Suppressor\n\
-                	Deattach Suppressor\n\
-                	Give Suppressor\n\
-                	Throw Suppressor", "Yes", "Exit");
+                    "Give Colt45\n\
+                    Attach Suppressor\n\
+                    Deattach Suppressor\n\
+                    Give Suppressor\n\
+                    Throw Suppressor", "Yes", "Exit");
         }
 
         case DIALOG_SUPPRESSION_HELP:
@@ -126,21 +123,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             {
                 switch(listitem)
                 {
-                	case 0:
-                		return cmd_createcolt45(playerid, "");
+                    case 0:
+                        return cmd_createcolt45(playerid, "");
                     case 1:
                         return cmd_attachsuppressor(playerid, "");
                     case 2:
                         return cmd_deattachsuppressor(playerid, "");
                     case 3:
-                    	return cmd_givemesuppressor(playerid, "");
+                        return cmd_givemesuppressor(playerid, "");
                     case 4:
-                    	return cmd_throwsuppressor(playerid, "");
+                        return cmd_throwsuppressor(playerid, "");
                 }
 
            }
             else
-            	return ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Commands", "Suppressor System", "Continue", "Cancel");
+                return ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Commands", "Suppressor System", "Continue", "Cancel");
         }
     }
     return 1;
@@ -148,14 +145,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 {
-	return 1;
+    return 1;
 }
 //----------------------SUPPRESION SYSTEM--------------------------//
 CMD:createcolt45(playerid, params[])
 {
-	GivePlayerWeapon(playerid, 22, 10);
-	SendClientMessage(playerid, COLOR_AQUA, "You have been given a Colt 45");
-	return 1;
+    GivePlayerWeapon(playerid, 22, 10);
+    SendClientMessage(playerid, COLOR_AQUA, "You have been given a Colt 45");
+    return 1;
 }
 
 CMD:givemesuppressor(playerid, params[])
@@ -188,31 +185,30 @@ CMD:attachsuppressor(playerid, params[])
 
 CMD:deattachsuppressor(playerid, params[])
 {
-	if(GetPlayerWeapon(playerid) == 22)
-		return SendClientMessage(playerid, COLOR_RED, "You don't have a suppressor on your colt 45!");
+    if(GetPlayerWeapon(playerid) == 22)
+        return SendClientMessage(playerid, COLOR_RED, "You don't have a suppressor on your colt 45!");
 
-	if(GetPlayerWeapon(playerid) != 23)
-		return SendClientMessage(playerid, COLOR_RED, "You don't have your colt 45 equipped");
+    if(GetPlayerWeapon(playerid) != 23)
+        return SendClientMessage(playerid, COLOR_RED, "You don't have your colt 45 equipped");
 
     GivePlayerWeapon(playerid, 22, 10);
     SendClientMessage(playerid, COLOR_AQUA, "You have successfully deattached the Suppressor from your gun");
 
-	return 1;
-}	
+    return 1;
+}   
 
 CMD:throwsuppressor(playerid, params[])
 {
-	PlayerInfo[playerid][pSuppressor] = 0;
-	SendClientMessage(playerid, COLOR_AQUA, "You have sucessfully thrown away your suppressor(s)");
+    PlayerInfo[playerid][pSuppressor] = 0;
+    SendClientMessage(playerid, COLOR_AQUA, "You have sucessfully thrown away your suppressor(s)");
 
-	return 1;
+    return 1;
 }
 
 CMD:help(playerid)
 {
-	return ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Commands", "Suppressor System", "Continue", "Cancel");
+    return ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Commands", "Suppressor System", "Continue", "Cancel");
 }
-
 CMD:gotolocker(playerid, params[])
 {
     if(IsPlayerInAnyVehicle(playerid))
@@ -261,11 +257,11 @@ CMD:quittruckerjob(playerid, params[])
 
         if(IsPlayerInAnyVehicle(playerid))
         {
-        	new vehID;
-        	vehID = GetPlayerVehicleID(playerid);
+            new vehID;
+            vehID = GetPlayerVehicleID(playerid);
 
-        	if(VehicleInfo[vehID][isTruckerVehicle] == true)
-        		RemovePlayerFromVehicle(playerid);
+            if(VehicleInfo[vehID][isTruckerVehicle] == true)
+                RemovePlayerFromVehicle(playerid);
         }
     }
     return 1;
@@ -282,7 +278,7 @@ CMD:pickupcrate(playerid, params)
     PlayerInfo[playerid][pIsHoldingCrate] = true;
 
     if(IsPlayerAttachedObjectSlotUsed(playerid, 0))
-    	RemovePlayerAttachedObject(playerid, 0);
+        RemovePlayerAttachedObject(playerid, 0);
 
     SetPlayerAttachedObject(playerid, 0, 1271, 6, 0.095999, 0.251999, -0.146999, -116.199989, -20.900005, 79.199981);
     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
@@ -293,45 +289,62 @@ CMD:pickupcrate(playerid, params)
 
 CMD:delivercrate(playerid)
 {
-	if(!PlayerInfo[playerid][pTruckerjob])
+    if(!PlayerInfo[playerid][pTruckerjob])
         return SendClientMessage(playerid, COLOR_RED, "Error:{FFFFFF} You do not have the Trucker Job to be able to deliver crates");
 
     if(!PlayerInfo[playerid][pIsHoldingCrate])
         return SendClientMessage(playerid, COLOR_RED, "Error:{FFFFFF} You do not have a crate with you!");
 
     new 
-    	Float:vehPosX,
-    	Float:vehPosY,
-    	Float:vehPosZ;
+        Float:vehPosX,
+        Float:vehPosY,
+        Float:vehPosZ;
 
-   	for(new i; i < MAX_VEHICLES; i++)
-   	{
-   		GetVehiclePos(i, vehPosX, vehPosY, vehPosZ);
+    for(new i; i < MAX_VEHICLES; i++)
+    {
+        GetVehiclePos(i, vehPosX, vehPosY, vehPosZ);
 
-   		if(IsPlayerInRangeOfPoint(playerid, 5.0, vehPosX, vehPosY, vehPosZ))
-   		{
-   			if(VehicleInfo[i][isTruckerVehicle] == true)
-   			{
-   				if(VehicleInfo[i][hasCrate])
-   					return SendClientMessage(playerid, COLOR_RED, "Error:{FFFFFF} That vehicle already has a crate in it.");
-   				else
-   				{
-   					PlayerInfo[playerid][pIsHoldingCrate] = false;
-   					VehicleInfo[i][hasCrate] = true;
+        if(IsPlayerInRangeOfPoint(playerid, 5.0, vehPosX, vehPosY, vehPosZ))
+        {
+            if(VehicleInfo[i][isTruckerVehicle] == true)
+            {
+                if(VehicleInfo[i][hasCrate])
+                    return SendClientMessage(playerid, COLOR_RED, "Error:{FFFFFF} That vehicle already has a crate in it.");
+                else
+                {
+                    PlayerInfo[playerid][pIsHoldingCrate] = false;
+                    VehicleInfo[i][hasCrate] = true;
 
-   					RemovePlayerAttachedObject(playerid, 0);
-   					SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+                    RemovePlayerAttachedObject(playerid, 0);
+                    SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 
-   					ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.1, 0, 1, 1, 0, 1000, 1);		
-   					ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.1, 0, 1, 1, 0, 1000, 1);		
+                    ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.1, 0, 1, 1, 0, 1000, 1);     
+                    ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.1, 0, 1, 1, 0, 1000, 1);     
 
-   					return SendClientMessage(playerid, COLOR_AQUA, "Info:{FFFFFF} You stored the crate in the boxville");
-   				}
-   			}
-   		}
-   	}
+                    return SendClientMessage(playerid, COLOR_AQUA, "Info:{FFFFFF} You stored the crate in the boxville");
+                }
+            }
+        }
+    }
 
-   	SendClientMessage(playerid, COLOR_RED, "Error:{FFFFFF} You are not near the boxvilles.");
+    SendClientMessage(playerid, COLOR_RED, "Error:{FFFFFF} You are not near the boxvilles.");
 
-	return 1;
+    return 1;
+}
+CMD:startmissiontrucker(playerid, params)
+{
+    if(!PlayerInfo[playerid][pTruckerjob])
+        return SendClientMessage(playerid, COLOR_RED, "You don't have the Trucker Job!");
+
+    new i;
+    if(!VehicleInfo[i][isTruckerVehicle]) 
+        return SendClientMessage(playerid, COLOR_RED, "You are not in the Boxville!");
+
+    if(!VehicleInfo[i][hasCrate])
+        return SendClientMessage(playerid, COLOR_RED, "You do not have a crate in the back of the Boxville");
+
+    SetPlayerCheckpoint(playerid, 2650.3015,-2385.5620,13.6328, 3.0);
+    SendClientMessage(playerid, COLOR_AQUA, "Get to the checkpoint!");
+
+    return 1;
 }
