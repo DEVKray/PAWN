@@ -65,10 +65,12 @@ public OnGameModeInit()
 
     return 1;
 }
+
 public OnGameModeExit()
 {
     return 1;
 }
+
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
     if(newstate == PLAYER_STATE_DRIVER)
@@ -76,13 +78,21 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
         new vehicleID;
         vehicleID = GetPlayerVehicleID(playerid);
 
-        if(VehicleInfo[vehicleID][isTruckerVehicle] == true && PlayerInfo[playerid][pTruckerjob] == 0)          
-        RemovePlayerFromVehicle(playerid);
-        SendClientMessage(playerid, COLOR_RED, "You do not have the Trucker Job!");
+        if(VehicleInfo[vehicleID][isTruckerVehicle] == true && PlayerInfo[playerid][pTruckerjob] == 0)
+        {
+            RemovePlayerFromVehicle(playerid);
+            SendClientMessage(playerid, COLOR_RED, "You do not have the Trucker Job!");
+        }
+    }
+    else if(newstate == PLAYER_STATE_ONFOOT)
+    {
+        if(pcheckpointTrucker[playerid] == 1)
+            cmd_canceltruckermission(playerid, "");
     }
 
     return 1;
 }
+
 public OnPlayerEnterCheckpoint(playerid)
 {
     if(pcheckpointTrucker[playerid] == 1)
@@ -92,6 +102,7 @@ public OnPlayerEnterCheckpoint(playerid)
         SendClientMessage(playerid, COLOR_LAWNGREEN, "Unload the crate and store it inside the garage.");
     }
 }
+
 public OnPlayerRequestClass(playerid, classid)
 {
     SetPlayerPos(playerid, 1958.3783, 1343.1572, 15.3746);
@@ -99,17 +110,21 @@ public OnPlayerRequestClass(playerid, classid)
     SetPlayerCameraLookAt(playerid, 1958.3783, 1343.1572, 15.3746);
     return 1;
 }
+
 public OnPlayerConnect(playerid)
 {
-    PlayerInfo[playerid][pTruckerjob] = 0;
+
+    new resetData[E_pInfo];                 // A dummy viariable for the sole purpose of resetting data //
+    PlayerInfo[playerid] = resetData;       // Resets the entire enum //
+
     return 1;
 }
 
 public OnPlayerDisconnect(playerid, reason)
-{
-    new i;
-    if(IsPlayerAttachedObjectSlotUsed(playerid, i)) 
-    RemovePlayerAttachedObject(playerid, i);
+{    
+    if(IsPlayerAttachedObjectSlotUsed(playerid, 0)) 
+        RemovePlayerAttachedObject(playerid, 0);
+
     return 1;
 }
 
@@ -278,7 +293,7 @@ CMD:quittruckerjob(playerid, params[])
     return 1;
 }
 
-CMD:pickupcrate(playerid, params)
+CMD:pickupcrate(playerid, params[])
 {
     if(!PlayerInfo[playerid][pTruckerjob])
         return SendClientMessage(playerid, COLOR_RED, "You do not have the Trucker Job to be able to pick up the crate");
@@ -342,43 +357,46 @@ CMD:loadcrate(playerid)
 
     return 1;
 }
-CMD:unloadcrate(playerid, params)
+
+CMD:unloadcrate(playerid, params[])
 {
-    if(pcheckpointTrucker[playerid] == 0)
-        SendClientMessage(playerid, COLOR_RED, "You are not at the checkpoint!");
+    if(!pcheckpointTrucker[playerid])
+        return SendClientMessage(playerid, -1, "You do not have an active trucker mission");
 
-    new
-        Float:vehPosX,
-        Float:vehPosY,
-        Float:vehPosZ;
+    if(!IsPlayerInCheckpoint(playerid))
+        return SendClientMessage(playerid, COLOR_RED, "You are not at the checkpoint!");
 
-    for(new i; i < MAX_VEHICLES; i++)
-    {
-        GetVehiclePos(i, vehPosX, vehPosY, vehPosZ);
+    new vehicleID;
 
-        if(IsPlayerInCheckpoint(playerid))
-        {
-            if(VehicleInfo[i][isTruckerVehicle] == true)
-            {
-                if(VehicleInfo[i][hasCrate])
+    vehicleID = GetPlayerVehicleID(playerid);
 
-                PlayerInfo[playerid][pIsHoldingCrate] = false;
-                VehicleInfo[i][hasCrate] = true;
+    PlayerInfo[playerid][pIsHoldingCrate] = true;
+    VehicleInfo[vehicleID][hasCrate] = false;
 
-                SetPlayerAttachedObject(playerid, 0, 1271, 6, 0.095999, 0.251999, -0.146999, -116.199989, -20.900005, 79.199981);
-                SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
-                SendClientMessage(playerid, COLOR_LAWNGREEN, "You have successfully picked up the crate. Get inside the garage!");
-             }
-         }
-    }
+    RemovePlayerFromVehicle(playerid);
+
+    SetPlayerAttachedObject(playerid, 0, 1271, 6, 0.095999, 0.251999, -0.146999, -116.199989, -20.900005, 79.199981);
+    SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
+    SendClientMessage(playerid, COLOR_LAWNGREEN, "You have successfully picked up the crate. Get inside the garage!");            
+
+    return 1;        
 }
-CMD:dropcrate(playerid, params)
+
+CMD:dropcrate(playerid, params[])
 {
+    if(!PlayerInfo[playerid][pIsHoldingCrate])
+        return SendClientMessage(playerid, -1, "You don't have a crate to drop");
+
+    PlayerInfo[playerid][pIsHoldingCrate] = false;
     RemovePlayerAttachedObject(playerid, 0);
     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+
     SendClientMessage(playerid, COLOR_LAWNGREEN, "You dropped your crate. It broke");
+
+    return 1;
 }
-CMD:starttruckermission(playerid, params)
+
+CMD:starttruckermission(playerid, params[])
 {
     if(!PlayerInfo[playerid][pTruckerjob])
         return SendClientMessage(playerid, COLOR_RED, "You don't have the Trucker Job!");
@@ -397,7 +415,8 @@ CMD:starttruckermission(playerid, params)
 
     return 1;
 }
-CMD:canceltruckermission(playerid, params)
+
+CMD:canceltruckermission(playerid, params[])
 {
     if(pcheckpointTrucker[playerid] == 1)
     {
@@ -405,5 +424,8 @@ CMD:canceltruckermission(playerid, params)
         DisablePlayerCheckpoint(playerid);
         SendClientMessage(playerid, COLOR_LAWNGREEN, "You have cancelled your mission!");
     }
-    else SendClientMessage(playerid, COLOR_RED, "You don't have a mission to cancel!");
+    else 
+        SendClientMessage(playerid, COLOR_RED, "You don't have a mission to cancel!");
+
+    return 1;
 }
