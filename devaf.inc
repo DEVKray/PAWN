@@ -16,13 +16,12 @@ enum E_pInfo
     pSuppressor,
     pTruckerjob,
     bool:pIsHoldingCrate,
-    bool:ploadedcrate
+    bool:pIsLoadingCrate,
 }
 enum E_vehInfo
 {
     bool:isTruckerVehicle,
     bool:hasCrate,
-    bool:loadedcrate
 }
 
 new VehicleInfo[MAX_VEHICLES][E_vehInfo];
@@ -100,6 +99,8 @@ public OnPlayerEnterCheckpoint(playerid)
         SetVehicleVelocity(GetPlayerVehicleID(playerid), 0.0, 0.0, 0.0);
         SetVehicleParamsEx(GetPlayerVehicleID(playerid), engine, lights, alarm, doors, bonnet, boot, objective);
         SendClientMessage(playerid, COLOR_LAWNGREEN, "Unload the crate and store it inside the garage.");
+        pcheckpointTrucker[playerid] = 0;
+        DisablePlayerCheckpoint(playerid);
     }
 }
 
@@ -371,6 +372,7 @@ CMD:unloadcrate(playerid, params[])
     vehicleID = GetPlayerVehicleID(playerid);
 
     PlayerInfo[playerid][pIsHoldingCrate] = true;
+    PlayerInfo[playerid][pIsLoadingCrate] = true;
     VehicleInfo[vehicleID][hasCrate] = false;
 
     RemovePlayerFromVehicle(playerid);
