@@ -39,9 +39,9 @@ main()
 
 public OnGameModeInit()
 {
-	gaskeypad1 = CreateObject(2886, 299.7220, -140.8922, 1004.5377,0.0, 0.0,96.0);
-
-	CreatePickup(1239, 1, 2670.8591,-2385.0046,13.8428, -1); // ENTER GAS CHAMBER
+    gaskeypad1 = CreateObject(2886, 299.7220, -140.8922, 1004.5377,0.0, 0.0,96.0);
+    
+    CreatePickup(1239, 1, 2670.8591,-2385.0046,13.8428, -1); // ENTER GAS CHAMBER
     CreatePickup(1239, 1, 305.3502,-141.8437,1004.0625, -1); // ENTER GAS CHAMBER 1
     CreatePickup(1239, 1, 299.9444,-141.8098,1004.0625, -1); // ENTER GAS CHAMBER 2
     CreatePickup(1239, 1, 304.5870,-141.8353,1004.0625, -1); // EXIT GAS CHAMBER 1
@@ -69,7 +69,7 @@ public OnPlayerRequestClass(playerid, classid)
 public OnPlayerConnect(playerid)
 {
 
-    RemoveBuildingForPlayer(playerid, 18051, 295.7734, -133.4609, 1004.5469, 0.25);
+        RemoveBuildingForPlayer(playerid, 18051, 295.7734, -133.4609, 1004.5469, 0.25);
 	RemoveBuildingForPlayer(playerid, 18050, 299.9453, -133.9297, 1005.8359, 0.25);
 	RemoveBuildingForPlayer(playerid, 1886, 305.7500, -130.6328, 1006.8906, 0.25);
 	RemoveBuildingForPlayer(playerid, 18109, 311.0703, -137.4453, 1005.0078, 0.25);
