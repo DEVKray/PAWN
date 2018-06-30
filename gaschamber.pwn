@@ -145,10 +145,12 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                 return SendClientMessage(playerid, COLOR_RED, "You do NOT have access to this keypad!");
             }
             else
+            {
                 ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);            
                 return ShowPlayerDialog(playerid, DIALOG_GAS_CHAMBER, DIALOG_STYLE_LIST, "Commands", "Gas Chamber", "Continue", "Cancel");
             }
-        }  
+        }
+	}
     return 1;   
 }
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
