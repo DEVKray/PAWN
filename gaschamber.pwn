@@ -19,7 +19,6 @@ enum E_pInfo
 }
 
 new PlayerInfo[MAX_PLAYERS][E_pInfo];
-new gaskeypad1;
 new vent[8];
 
 public OnFilterScriptInit()
@@ -39,7 +38,7 @@ main()
 
 public OnGameModeInit()
 {
-    gaskeypad1 = CreateObject(2886, 299.7220, -140.8922, 1004.5377,0.0, 0.0,96.0);
+    CreateObject(19305, 299.7220, -140.8922, 1004.5377,0.0, 0.0,96.0); // Keypad GAS CHAMBER
     
     CreatePickup(1239, 1, 2670.8591,-2385.0046,13.8428, -1); // ENTER GAS CHAMBER
     CreatePickup(1239, 1, 305.3502,-141.8437,1004.0625, -1); // ENTER GAS CHAMBER 1
@@ -138,17 +137,19 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
     if(PRESSED(KEY_SECONDARY_ATTACK))
     {
-        if(IsPlayerInRangeOfPoint(playerid, 2.0, 299.7220, -140.8922, 1004.5377))
+        if(IsPlayerInRangeOfPoint(playerid, 8.0, 299.7220, -140.8922, 1004.5377))
         {
-            if(PlayerInfo[playerid][pGaskey] == 1)
+            if(PlayerInfo[playerid][pGaskey] == 0)
             {
-            	ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
-
-	            return ShowPlayerDialog(playerid, DIALOG_GAS_CHAMBER, DIALOG_STYLE_LIST, "Commands", "Gas Chamber", "Continue", "Cancel");
+                ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);            
+                return SendClientMessage(playerid, COLOR_RED, "You do NOT have access to this keypad!");
             }
-        }     
-    }
-	return 1;
+            else
+                ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);            
+                return ShowPlayerDialog(playerid, DIALOG_GAS_CHAMBER, DIALOG_STYLE_LIST, "Commands", "Gas Chamber", "Continue", "Cancel");
+            }
+        }  
+    return 1;   
 }
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
@@ -159,8 +160,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if(response)
                 return ShowPlayerDialog(playerid, DIALOG_GAS_CHAMBER, DIALOG_STYLE_LIST, "Gas Chamber",
                     "Start the ventilation\n\
-                    Stop the ventilation\n\
-                    Add the ventilation", "Yes", "Exit");
+                    Stop the ventilation", "Yes", "Exit");
         }
 
         case DIALOG_GAS_CHAMBER_HELP:
@@ -173,8 +173,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                         return cmd_startventilation(playerid, "");
                     case 1:
                         return cmd_stopventilation(playerid, "");
-                    case 2:
-                        return cmd_addventilation(playerid, "");
                 }
             }
             else
@@ -190,7 +188,14 @@ public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 CMD:givegaskey(playerid, params[])
 {
     PlayerInfo[playerid][pGaskey] = 1;
-    SendClientMessage(playerid, COLOR_LAWNGREEN, "You have successfully given yourself the key to the gas chamber");
+    SendClientMessage(playerid, COLOR_LAWNGREEN, "You have successfully given yourself the key to the chamber");
+
+    return 1;
+}
+CMD:removegaskey(playerid, params[])
+{
+    PlayerInfo[playerid][pGaskey] = 0;
+    SendClientMessage(playerid, COLOR_RED, "You have successfully removed your key to the chamber");
 
     return 1;
 }
@@ -224,7 +229,7 @@ CMD:enter(playerid, params[])
     }
     return 1;
 }
-CMD:exits(playerid, params[])
+CMD:exit(playerid, params[])
 {
     if(IsPlayerInRangeOfPoint(playerid, 2.0, 303.3502,-141.8437,1004.0625))
     {
@@ -248,10 +253,6 @@ CMD:tpgas(playerid, params[])
 
     return 1;
 }
-CMD:startventilation(playerid, params[])
-{
-    return 1;
-}
 CMD:stopventilation(playerid, params[])
 {
 	for(new i = 0; i < 8; i++)
@@ -259,7 +260,7 @@ CMD:stopventilation(playerid, params[])
     
     return 1;
 }
-CMD:addventilation(playerid, params[])
+CMD:startventilation(playerid, params[])
 {
 
 	vent[0] = CreateObject(18748, 291.03717, -141.65465, 1004.11489,   0.00000, 0.00000, 90.00000);
@@ -267,7 +268,7 @@ CMD:addventilation(playerid, params[])
 	vent[2] = CreateObject(18748, 286.70346, -135.37524, 1004.11489,   0.00000, 0.00000, 90.00000);
 	vent[3] = CreateObject(18748, 290.90723, -127.20930, 1004.11489,   0.00000, 0.00000, 90.00000);
 	vent[4] = CreateObject(18748, 297.48935, -133.14328, 1004.11489,   0.00000, 0.00000, 90.00000);
-	vent[5] = CreateObject(18748, 286.3423, -135.4173, 1004.4798,81.3067,	0.00000, 0.00000, 90.00000);
+	vent[5] = CreateObject(18748, 286.3423,  -135.4173,  1004.11489,   0.00000, 0.00000, 90.00000);
 	vent[6] = CreateObject(18748, 295.38120, -140.29987, 1004.11489,   0.00000, 0.00000, 90.00000);
 	vent[7] = CreateObject(18748, 294.85129, -135.20532, 1004.11489,   0.00000, 0.00000, 90.00000);
     
