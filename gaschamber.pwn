@@ -68,8 +68,7 @@ public OnPlayerRequestClass(playerid, classid)
 
 public OnPlayerConnect(playerid)
 {
-
-        RemoveBuildingForPlayer(playerid, 18051, 295.7734, -133.4609, 1004.5469, 0.25);
+    RemoveBuildingForPlayer(playerid, 18051, 295.7734, -133.4609, 1004.5469, 0.25);
 	RemoveBuildingForPlayer(playerid, 18050, 299.9453, -133.9297, 1005.8359, 0.25);
 	RemoveBuildingForPlayer(playerid, 1886, 305.7500, -130.6328, 1006.8906, 0.25);
 	RemoveBuildingForPlayer(playerid, 18109, 311.0703, -137.4453, 1005.0078, 0.25);
@@ -143,14 +142,14 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         {
             if(PlayerInfo[playerid][pGaskey] == 1)
             {
-            ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0); 
+            	ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
 
-            return ShowPlayerDialog(playerid, DIALOG_GAS_CHAMBER, DIALOG_STYLE_LIST, "Commands", "Gas Chamber", "Continue", "Cancel");
+	            return ShowPlayerDialog(playerid, DIALOG_GAS_CHAMBER, DIALOG_STYLE_LIST, "Commands", "Gas Chamber", "Continue", "Cancel");
             }
         }     
-     }
-    return 1;
- }
+    }
+	return 1;
+}
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
     switch(dialogid)
@@ -255,8 +254,8 @@ CMD:startventilation(playerid, params[])
 }
 CMD:stopventilation(playerid, params[])
 {
-	for(i = 0; i < 10; i++)
-	DestroyObject(ObjectIDs[i]);
+	for(new i = 0; i < 8; i++)
+	DestroyObject(vent[i]);
     
     return 1;
 }
