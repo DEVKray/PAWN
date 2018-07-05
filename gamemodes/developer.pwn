@@ -5,10 +5,10 @@
 #include <streamer>
 
 #include "./colors.inc"
-#include "suppressorsystem.inc"
-#include "gaschamber.inc"
-#include "register.inc"
-#include "playerdata.inc"
+#include "./suppressorsystem.inc"
+#include "./gaschamber.inc"
+#include "./register.inc"
+#include "./playerdata.inc"
 
 #define DIALOG_HELP 1
 #define DIALOG_SUPPRESSION_HELP 2
