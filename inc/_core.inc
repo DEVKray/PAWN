@@ -1,0 +1,8 @@
+#include "./inc/colors.inc"
+#include "./inc/CA3.inc"
+#include "./inc/adolf.inc"
+#include "./inc/s-art.inc"
+#include "./inc/suppressorsystem.inc"
+#include "./inc/gaschamber.inc"
+#include "./inc/register.inc"
+#include "./inc/playerdata.inc"
